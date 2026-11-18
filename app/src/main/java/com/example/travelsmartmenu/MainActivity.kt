@@ -48,6 +48,9 @@ fun OnboardingScreen(
     val textMuted = Color(0xFF5A655E)
     val borderLight = Color(0xFFDCDFD9)
 
+    // Automatically switches whenever viewModel.selectedLanguage changes!
+    val strings = AppStrings.forLanguage(viewModel.selectedLanguage)
+
     Scaffold(
         containerColor = bgCream
     ) { innerPadding ->
@@ -60,7 +63,7 @@ fun OnboardingScreen(
         ) {
             // 1. Headline & Subtitle
             Text(
-                text = "No guesswork.\nAll offline.",
+                text = strings.headline,
                 fontSize = 34.sp,
                 lineHeight = 40.sp,
                 fontWeight = FontWeight.ExtraBold,
@@ -68,7 +71,7 @@ fun OnboardingScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "Scan a menu. Understand every dish. Order something you'll love.",
+                text = strings.subtitle,
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
                 color = textMuted
@@ -84,7 +87,7 @@ fun OnboardingScreen(
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
-                        text = "LITERAL TRANSLATION",
+                        text = strings.literalTranslationLabel,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 0.8.sp,
@@ -92,7 +95,7 @@ fun OnboardingScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "蚂蚁上树  →  \"Ants Climbing a Tree\"",
+                        text = strings.literalTranslationExample,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF1E2420)
@@ -104,7 +107,7 @@ fun OnboardingScreen(
                     )
 
                     Text(
-                        text = "REAL MEANING",
+                        text = strings.realMeaningLabel,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 0.8.sp,
@@ -112,7 +115,7 @@ fun OnboardingScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Savory minced pork clinging to glassy vermicelli noodles in a spicy Sichuan sauce.",
+                        text = strings.realMeaningExample,
                         fontSize = 15.sp,
                         lineHeight = 21.sp,
                         color = Color(0xFF1E2420)
@@ -124,7 +127,7 @@ fun OnboardingScreen(
 
             // 3. Country Selector
             Text(
-                text = "Where are you eating?",
+                text = strings.whereEatingLabel,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = darkGreen
@@ -150,7 +153,7 @@ fun OnboardingScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = viewModel.selectedCountry,
+                            text = strings.countryName,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color(0xFF1E2420)
@@ -165,7 +168,7 @@ fun OnboardingScreen(
             }
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "More countries coming soon",
+                text = strings.moreCountriesSoon,
                 fontSize = 12.sp,
                 color = Color(0xFF8A948E)
             )
@@ -199,14 +202,14 @@ fun OnboardingScreen(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = "Tailor dish info to current province's style",
+                            text = strings.tailorProvinceTitle,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF1E2420)
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "Helps identify regional variations of dishes.",
+                            text = strings.tailorProvinceSubtitle,
                             fontSize = 12.sp,
                             color = textMuted
                         )
@@ -218,7 +221,7 @@ fun OnboardingScreen(
 
             // 5. Language Toggle
             Text(
-                text = "Foreign menus, in your language",
+                text = strings.foreignMenusLabel,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = darkGreen
@@ -267,7 +270,7 @@ fun OnboardingScreen(
 
             // 6. Primary CTA Button
             Button(
-                onClick = { /* Navigate to scanner screen later */ },
+                onClick = { /* Navigate to scanner screen next */ },
                 colors = ButtonDefaults.buttonColors(containerColor = darkGreen),
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier
@@ -282,7 +285,7 @@ fun OnboardingScreen(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Scan a menu",
+                    text = strings.scanMenuButton,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White
