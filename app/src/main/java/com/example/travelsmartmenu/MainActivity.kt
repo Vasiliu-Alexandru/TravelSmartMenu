@@ -16,7 +16,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,15 +39,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun OnboardingScreen() {
+fun OnboardingScreen(
+    viewModel: OnboardingViewModel = viewModel()
+) {
     val bgCream = Color(0xFFF7F7F2)
     val darkGreen = Color(0xFF193E29)
     val cardSage = Color(0xFFE7EDE8)
     val textMuted = Color(0xFF5A655E)
     val borderLight = Color(0xFFDCDFD9)
-
-    var tailorToProvince by remember { mutableStateOf(true) }
-    var selectedLanguage by remember { mutableStateOf("English") }
 
     Scaffold(
         containerColor = bgCream
@@ -150,7 +150,7 @@ fun OnboardingScreen() {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "China",
+                            text = viewModel.selectedCountry,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color(0xFF1E2420)
@@ -179,15 +179,17 @@ fun OnboardingScreen() {
                 border = BorderStroke(1.dp, borderLight),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { tailorToProvince = !tailorToProvince }
+                    .clickable {
+                        viewModel.toggleTailorToProvince(!viewModel.tailorToProvince)
+                    }
             ) {
                 Row(
                     modifier = Modifier.padding(14.dp),
                     verticalAlignment = Alignment.Top
                 ) {
                     Checkbox(
-                        checked = tailorToProvince,
-                        onCheckedChange = { tailorToProvince = it },
+                        checked = viewModel.tailorToProvince,
+                        onCheckedChange = { viewModel.toggleTailorToProvince(it) },
                         colors = CheckboxDefaults.colors(
                             checkedColor = darkGreen,
                             checkmarkColor = Color.White
@@ -230,13 +232,13 @@ fun OnboardingScreen() {
                     .padding(4.dp)
             ) {
                 listOf("English", "Română").forEach { lang ->
-                    val isSelected = selectedLanguage == lang
+                    val isSelected = viewModel.selectedLanguage == lang
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .clip(RoundedCornerShape(9.dp))
                             .background(if (isSelected) Color.White else Color.Transparent)
-                            .clickable { selectedLanguage = lang }
+                            .clickable { viewModel.updateLanguage(lang) }
                             .padding(vertical = 10.dp),
                         contentAlignment = Alignment.Center
                     ) {
