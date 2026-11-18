@@ -25,7 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,6 +129,8 @@ fun OnboardingScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // 3. Country Selector
+            var countryMenuExpanded by remember { mutableStateOf(false) }
+
             Text(
                 text = strings.whereEatingLabel,
                 fontSize = 14.sp,
@@ -133,47 +138,104 @@ fun OnboardingScreen(
                 color = darkGreen
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Surface(
-                color = Color.White,
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, borderLight),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Surface(
+                    color = Color.White,
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, borderLight),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { countryMenuExpanded = true }
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "CN",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textMuted
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = strings.countryName,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xFF1E2420)
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "CN",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = textMuted
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = viewModel.selectedCountry,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color(0xFF1E2420)
+                            )
+                        }
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Select country",
+                            tint = textMuted
                         )
                     }
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Select country",
-                        tint = textMuted
+                }
+
+                DropdownMenu(
+                    expanded = countryMenuExpanded,
+                    onDismissRequest = { countryMenuExpanded = false },
+                    containerColor = Color.White,
+                    modifier = Modifier.fillMaxWidth(0.88f)
+                ) {
+                    DropdownMenuItem(
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "CN",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = textMuted
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "China",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color(0xFF1E2420)
+                                )
+                            }
+                        },
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = darkGreen,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        },
+                        onClick = {
+                            viewModel.updateCountry("China")
+                            countryMenuExpanded = false
+                        }
+                    )
+
+                    HorizontalDivider(color = borderLight)
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = strings.moreCountriesSoon,
+                                fontSize = 13.sp,
+                                color = Color(0xFF8A948E)
+                            )
+                        },
+                        enabled = false,
+                        onClick = { }
                     )
                 }
             }
+
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = strings.moreCountriesSoon,
                 fontSize = 12.sp,
                 color = Color(0xFF8A948E)
             )
-
-            Spacer(modifier = Modifier.height(18.dp))
 
             // 4. Province Tailoring Checkbox Card
             Surface(

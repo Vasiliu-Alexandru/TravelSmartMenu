@@ -15,6 +15,10 @@ class OnboardingViewModel : ViewModel() {
     var selectedLanguage by mutableStateOf("English")
         private set
 
+    fun updateCountry(country: String) {
+        selectedCountry = country
+    }
+
     fun toggleTailorToProvince(checked: Boolean) {
         tailorToProvince = checked
     }
