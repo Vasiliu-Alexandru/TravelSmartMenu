@@ -17,6 +17,10 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,17 +29,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MaterialTheme {
-                OnboardingScreen()
+                val navController = rememberNavController()
+                val onboardingViewModel: OnboardingViewModel = viewModel()
+
+                NavHost(navController = navController, startDestination = "onboarding") {
+                    composable("onboarding") {
+                        OnboardingScreen(
+                            viewModel = onboardingViewModel,
+                            onScanMenuClick = { navController.navigate("scanner") }
+                        )
+                    }
+                    composable("scanner") {
+                        MenuScannerScreen(
+                            selectedLanguage = onboardingViewModel.selectedLanguage,
+                            onBackClick = { navController.popBackStack() },
+                            onMenuCaptured = { /* Next: navigate to Screen 3 (Dish Results) */ }
+                        )
+                    }
+                }
             }
         }
     }
@@ -43,7 +64,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun OnboardingScreen(
-    viewModel: OnboardingViewModel = viewModel()
+    viewModel: OnboardingViewModel = viewModel(),
+    onScanMenuClick: () -> Unit = {}
 ) {
     val bgCream = Color(0xFFF7F7F2)
     val darkGreen = Color(0xFF193E29)
@@ -51,7 +73,6 @@ fun OnboardingScreen(
     val textMuted = Color(0xFF5A655E)
     val borderLight = Color(0xFFDCDFD9)
 
-    // Automatically switches whenever viewModel.selectedLanguage changes!
     val strings = AppStrings.forLanguage(viewModel.selectedLanguage)
 
     Scaffold(
@@ -237,6 +258,8 @@ fun OnboardingScreen(
                 color = Color(0xFF8A948E)
             )
 
+            Spacer(modifier = Modifier.height(18.dp))
+
             // 4. Province Tailoring Checkbox Card
             Surface(
                 color = Color.White,
@@ -332,7 +355,7 @@ fun OnboardingScreen(
 
             // 6. Primary CTA Button
             Button(
-                onClick = { /* Navigate to scanner screen next */ },
+                onClick = onScanMenuClick,
                 colors = ButtonDefaults.buttonColors(containerColor = darkGreen),
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier
