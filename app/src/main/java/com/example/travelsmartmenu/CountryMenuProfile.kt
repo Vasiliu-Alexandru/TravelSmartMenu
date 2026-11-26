@@ -1,5 +1,6 @@
 package com.example.travelsmartmenu
 
+import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
@@ -12,8 +13,10 @@ data class CountryMenuProfile(
     val countryCode: String,
     val displayName: String,
     val scriptType: ScriptType,
+    val translateSourceLang: String,
     val minDishLength: Int,
-    val currencyTokens: List<String>
+    val currencyTokens: List<String>,
+    val rateToEur: Double
 ) {
     fun createRecognizer(): TextRecognizer = when (scriptType) {
         ScriptType.CHINESE -> TextRecognition.getClient(
@@ -43,8 +46,10 @@ object SupportedCountries {
         countryCode = "CN",
         displayName = "China",
         scriptType = ScriptType.CHINESE,
+        translateSourceLang = TranslateLanguage.CHINESE,
         minDishLength = 2,
-        currencyTokens = listOf("¥", "￥", "元", "块", "rmb", "cny")
+        currencyTokens = listOf("¥", "￥", "元", "块", "rmb", "cny"),
+        rateToEur = 0.13
     )
 
     val all: List<CountryMenuProfile> = listOf(CHINA)

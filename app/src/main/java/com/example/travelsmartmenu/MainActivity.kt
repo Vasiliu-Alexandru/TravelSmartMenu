@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 val navController = rememberNavController()
                 val onboardingViewModel: OnboardingViewModel = viewModel()
+                var scannedDishes by remember { mutableStateOf<List<TranslatedMenuItem>>(emptyList()) }
 
                 NavHost(navController = navController, startDestination = "onboarding") {
                     composable("onboarding") {
@@ -53,9 +54,19 @@ class MainActivity : ComponentActivity() {
                         MenuScannerScreen(
                             selectedLanguage = onboardingViewModel.selectedLanguage,
                             selectedCountry = onboardingViewModel.selectedCountry,
+                            onBackClick = { navController.popBackStack() },
+                            onSeeAllDishesClick = { dishes ->
+                                scannedDishes = dishes
+                                navController.navigate("all_dishes")
+                            }
+                        )
+                    }
+                    composable("all_dishes") {
+                        AllDishesScreen(
+                            dishes = scannedDishes,
+                            selectedLanguage = onboardingViewModel.selectedLanguage,
                             onBackClick = { navController.popBackStack() }
                         )
-
                     }
                 }
             }
