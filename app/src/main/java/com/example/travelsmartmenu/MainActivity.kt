@@ -52,9 +52,10 @@ class MainActivity : ComponentActivity() {
                     composable("scanner") {
                         MenuScannerScreen(
                             selectedLanguage = onboardingViewModel.selectedLanguage,
-                            onBackClick = { navController.popBackStack() },
-                            onMenuCaptured = { /* Next: navigate to Screen 3 (Dish Results) */ }
+                            selectedCountry = onboardingViewModel.selectedCountry,
+                            onBackClick = { navController.popBackStack() }
                         )
+
                     }
                 }
             }
